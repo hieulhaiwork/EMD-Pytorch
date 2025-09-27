@@ -53,7 +53,7 @@ setup_args = {
     'long_description': open('README.md', 'r', encoding='utf-8').read(),
     'long_description_content_type': 'text/markdown',
     'author': 'Haoqiang Fan, Kaichun Mo, Jiayuan Gu',
-    'author_email': '',
+    'author_email': 'Unspecified@gmail.com',
     'maintainer': 'hieulhaiwork',
     'maintainer_email': 'hieulhaiwork@gmail.com',
     'url': 'https://github.com/hieulhaiwork/EMD-Pytorch',

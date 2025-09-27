@@ -14,7 +14,7 @@ description = "Earth Mover Distance (EMD) CUDA extension for PyTorch"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
-    {name = "Haoqiang Fan"},
+    {name = "Haoqiang Fan", email = "Unspecified@gmail.com"},
     {name = "Kaichun Mo"},
     {name = "Jiayuan Gu"},
 ]
