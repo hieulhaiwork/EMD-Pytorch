@@ -1,5 +1,9 @@
 # Earth Mover Distance (EMD) CUDA Extension for PyTorch
 
+[![CI](https://github.com/hieulhaiwork/EMD-Pytorch/actions/workflows/ci.yml/badge.svg)](https://github.com/hieulhaiwork/EMD-Pytorch/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+
 A high-performance PyTorch implementation of Earth Mover Distance (EMD) for point clouds using CUDA. This package provides efficient computation of EMD with automatic differentiation support for deep learning applications.
 
 > **Note**: This repository is an updated and improved version of [daerduoCarey/PyTorchEMD](https://github.com/daerduoCarey/PyTorchEMD). Special thanks to the original authors for their foundational work.

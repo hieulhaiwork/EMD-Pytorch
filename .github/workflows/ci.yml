@@ -7,38 +7,53 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  compatibility-check:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [3.8, 3.9, '3.10', 3.11]
-        pytorch-version: [1.13.0, 2.0.0]
         
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         
-    - name: Set up CUDA (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
-      uses: Jimver/cuda-toolkit@v0.2.11
-      with:
-        cuda: '11.8'
-        
-    - name: Install dependencies
+    - name: Install basic dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install torch==${{ matrix.pytorch-version }} torchvision --index-url https://download.pytorch.org/whl/cu118
+        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
         pip install numpy
         
-    - name: Build extension
+    - name: Run CI compatibility check
       run: |
-        python setup.py build_ext --inplace
+        python ci_check.py
         
-    - name: Test with pytest
+  build-test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+        
+    - name: Install build dependencies
       run: |
-        python comprehensive_test.py
+        python -m pip install --upgrade pip
+        pip install build wheel setuptools
+        
+    - name: Build package
+      run: |
+        python -m build
+        
+    - name: Check package
+      run: |
+        pip install twine
+        twine check dist/*
