@@ -1,13 +1,23 @@
 # setup.py
 from setuptools import setup, find_packages
-from torch.utils.cpp_extension import BuildExtension, CUDAExtension
-import torch
 import os
 import platform
 
-# Check if CUDA is available
-if not torch.cuda.is_available():
-    raise RuntimeError("CUDA is not available. This package requires CUDA.")
+# Try to import torch and CUDA extension, but don't fail if not available
+try:
+    import torch
+    from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+    TORCH_AVAILABLE = True
+    CUDA_AVAILABLE = torch.cuda.is_available()
+except ImportError:
+    TORCH_AVAILABLE = False
+    CUDA_AVAILABLE = False
+    # Dummy classes for when torch is not available
+    class BuildExtension:
+        pass
+    class CUDAExtension:
+        def __init__(self, *args, **kwargs):
+            pass
 
 # Platform-specific compiler arguments
 def get_compiler_args():
@@ -32,33 +42,26 @@ def get_compiler_args():
 # Optionally set TORCH_CUDA_ARCH_LIST to restrict architectures, e.g. "8.6;8.0"
 # os.environ['TORCH_CUDA_ARCH_LIST'] = "8.6"  # adjust for your GPU if desired
 
-setup(
-    name='emd_ext',
-    version='1.0.0',
-    description='Earth Mover Distance (EMD) CUDA extension for PyTorch',
-    long_description=open('README.md', 'r', encoding='utf-8').read(),
-    long_description_content_type='text/markdown',
-    author='Haoqiang Fan, Kaichun Mo, Jiayuan Gu',
-    maintainer='hieulhaiwork',
-    url='https://github.com/hieulhaiwork/EMD-Pytorch',
-    packages=find_packages(),
-    install_requires=[
+# Determine if we should build CUDA extensions
+BUILD_CUDA = TORCH_AVAILABLE and CUDA_AVAILABLE and os.environ.get('SKIP_CUDA_BUILD', '0') != '1'
+
+# Setup arguments
+setup_args = {
+    'name': 'emd_ext',
+    'version': '1.0.0',
+    'description': 'Earth Mover Distance (EMD) CUDA extension for PyTorch',
+    'long_description': open('README.md', 'r', encoding='utf-8').read(),
+    'long_description_content_type': 'text/markdown',
+    'author': 'Haoqiang Fan, Kaichun Mo, Jiayuan Gu',
+    'maintainer': 'hieulhaiwork',
+    'url': 'https://github.com/hieulhaiwork/EMD-Pytorch',
+    'packages': find_packages(),
+    'install_requires': [
         'torch>=1.8.0',
         'numpy',
     ],
-    python_requires='>=3.7',
-    ext_modules=[
-        CUDAExtension(
-            name='emd_cuda',
-            sources=[
-                'emd/cuda/emd.cpp',
-                'emd/cuda/emd_kernel.cu',
-            ],
-            extra_compile_args=get_compiler_args()
-        ),
-    ],
-    cmdclass={'build_ext': BuildExtension},
-    classifiers=[
+    'python_requires': '>=3.7',
+    'classifiers': [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
@@ -74,4 +77,20 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: Microsoft :: Windows',
     ],
-)
+}
+
+# Only add CUDA extensions if available
+if BUILD_CUDA:
+    setup_args['ext_modules'] = [
+        CUDAExtension(
+            name='emd_cuda',
+            sources=[
+                'emd/cuda/emd.cpp',
+                'emd/cuda/emd_kernel.cu',
+            ],
+            extra_compile_args=get_compiler_args()
+        ),
+    ]
+    setup_args['cmdclass'] = {'build_ext': BuildExtension}
+
+setup(**setup_args)

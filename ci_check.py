@@ -14,10 +14,10 @@ def check_python_version():
     print(f"  Current: {version.major}.{version.minor}.{version.micro}")
     
     if version >= (3, 7):
-        print("  ✅ Compatible")
+        print("  [OK] Compatible")
         return True
     else:
-        print("  ❌ Requires Python 3.7+")
+        print("  [FAIL] Requires Python 3.7+")
         return False
 
 def check_platform():
@@ -28,10 +28,10 @@ def check_platform():
     print(f"  Architecture: {platform.machine()}")
     
     if system in ['Windows', 'Linux', 'Darwin']:
-        print("  ✅ Supported platform")
+        print("  [OK] Supported platform")
         return True
     else:
-        print("  ⚠️  Untested platform")
+        print("  [WARN] Untested platform")
         return False
 
 def check_basic_imports():
@@ -41,17 +41,17 @@ def check_basic_imports():
     try:
         import torch
         print(f"  PyTorch version: {torch.__version__}")
-        print("  ✅ PyTorch import successful")
+        print("  [OK] PyTorch import successful")
     except ImportError:
-        print("  ❌ PyTorch not available")
+        print("  [FAIL] PyTorch not available")
         return False
     
     try:
         import numpy
         print(f"  NumPy version: {numpy.__version__}")
-        print("  ✅ NumPy import successful")
+        print("  [OK] NumPy import successful")
     except ImportError:
-        print("  ❌ NumPy not available")
+        print("  [FAIL] NumPy not available")
         return False
     
     return True
@@ -62,27 +62,27 @@ def check_package_structure():
     
     # Check if emd directory exists
     if not os.path.exists('emd'):
-        print("  ❌ emd directory not found")
+        print("  [FAIL] emd directory not found")
         return False
-    print("  ✅ emd directory exists")
+    print("  [OK] emd directory exists")
     
     # Check if __init__.py exists
     if not os.path.exists('emd/__init__.py'):
-        print("  ❌ emd/__init__.py not found")
+        print("  [FAIL] emd/__init__.py not found")
         return False
-    print("  ✅ emd/__init__.py exists")
+    print("  [OK] emd/__init__.py exists")
     
     # Check if emd.py exists
     if not os.path.exists('emd/emd.py'):
-        print("  ❌ emd/emd.py not found")
+        print("  [FAIL] emd/emd.py not found")
         return False
-    print("  ✅ emd/emd.py exists")
+    print("  [OK] emd/emd.py exists")
     
     # Check if CUDA directory exists
     if not os.path.exists('emd/cuda'):
-        print("  ❌ emd/cuda directory not found")
+        print("  [FAIL] emd/cuda directory not found")
         return False
-    print("  ✅ emd/cuda directory exists")
+    print("  [OK] emd/cuda directory exists")
     
     return True
 
@@ -101,10 +101,10 @@ def main():
     
     print("\n" + "=" * 50)
     if all(checks):
-        print("🎉 All compatibility checks passed!")
+        print("SUCCESS: All compatibility checks passed!")
         sys.exit(0)
     else:
-        print("❌ Some checks failed!")
+        print("FAILED: Some checks failed!")
         sys.exit(1)
 
 if __name__ == "__main__":

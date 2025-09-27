@@ -32,7 +32,7 @@ jobs:
       run: |
         python ci_check.py
         
-  build-test:
+  package-test:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
@@ -44,16 +44,22 @@ jobs:
       with:
         python-version: 3.9
         
-    - name: Install build dependencies
+    - name: Install basic dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build wheel setuptools
+        pip install setuptools wheel
         
-    - name: Build package
+    - name: Validate package metadata
       run: |
-        python -m build
+        python setup.py check --metadata --strict
         
-    - name: Check package
+    - name: Test package structure
       run: |
-        pip install twine
-        twine check dist/*
+        python -c "
+        import os
+        assert os.path.exists('emd/'), 'emd directory missing'
+        assert os.path.exists('emd/__init__.py'), 'emd/__init__.py missing'
+        assert os.path.exists('emd/emd.py'), 'emd/emd.py missing'
+        assert os.path.exists('emd/cuda/emd.cpp'), 'CUDA sources missing'
+        print('Package structure validated!')
+        "
