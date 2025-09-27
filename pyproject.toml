@@ -1,0 +1,37 @@
+[build-system]
+requires = [
+    "setuptools>=50", 
+    "wheel", 
+    "torch>=1.8.0",
+    "pybind11>=2.6.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "emd_ext"
+version = "1.0.0"
+description = "Earth Mover Distance (EMD) CUDA extension for PyTorch"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Haoqiang Fan"},
+    {name = "Kaichun Mo"},
+    {name = "Jiayuan Gu"},
+]
+maintainers = [
+    {name = "hieulhaiwork", email = "hieulhaiwork@gmail.com"},
+]
+requires-python = ">=3.7"
+dependencies = [
+    "torch>=1.8.0",
+    "numpy",
+]
+
+[project.urls]
+Homepage = "https://github.com/hieulhaiwork/EMD-Pytorch"
+Repository = "https://github.com/hieulhaiwork/EMD-Pytorch"
+Issues = "https://github.com/hieulhaiwork/EMD-Pytorch/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["emd*"]
