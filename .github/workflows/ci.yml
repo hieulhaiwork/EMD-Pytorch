@@ -30,7 +30,7 @@ jobs:
         
     - name: Run CI compatibility check
       run: |
-        python ci_check.py
+        python .github/scripts/ci_check.py
         
   package-test:
     runs-on: ubuntu-latest

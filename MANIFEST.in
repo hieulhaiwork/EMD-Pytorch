@@ -4,7 +4,6 @@ include CONTRIBUTING.md
 include MANIFEST.in
 include pyproject.toml
 include build.sh
-include ci_check.py
 recursive-include emd *.py
 recursive-include emd/cuda *.cpp *.cu *.h
 recursive-include tests *.py
